@@ -1,0 +1,7 @@
+/* src/style.css */
+@import "tailwindcss";
+
+/* Твои кастомные стили */
+.flame {
+  font-size: 1.4em;
+}

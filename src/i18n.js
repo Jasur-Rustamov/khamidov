@@ -16,16 +16,16 @@ const messages = {
             f3: 'Ответим через 7 минут — не откладывайте решение проблем.'
         },
         stats: {
-            n1: '350 000+',
+            n1: '1 000+',
             s1: 'Нам доверяют решение своих вопросов',
 
-            n2: '> 3 000 000',
+            n2: '> 350',
             s2: 'Клиентов получили юридическую помощь',
 
-            n3: '15 лет',
+            n3: '29 лет',
             s3: 'Успешно отстаиваем права наших клиентов',
 
-            n4: '10 лет',
+            n4: '26 лет',
             s4: 'Средний стаж специалиста нашей компании'
         },
         services: {
@@ -307,16 +307,16 @@ const messages = {
             f3: '7 daqiqa ichida javob beramiz.'
         },
         stats: {
-            n1: '350 000+',
+            n1: '1 000+',
             s1: 'Mijozlar o‘z muammolarini bizga ishonib topshiradi',
 
-            n2: '> 3 000 000',
+            n2: '> 350',
             s2: 'Mijozlar yuridik yordam oldi',
 
-            n3: '15 yil',
+            n3: '29 yil',
             s3: 'Mijozlarimiz huquqlarini muvaffaqiyatli himoya qilamiz',
 
-            n4: '10 yil',
+            n4: '26 yil',
             s4: 'Mutaxassislarimizning o‘rtacha tajribasi'
         },
         services: {

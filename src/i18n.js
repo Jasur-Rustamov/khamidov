@@ -248,7 +248,7 @@ const messages = {
             }
         },
         chatbot: {
-            hello: 'Здравствуйте! 👋 Чем могу помочь?',
+            hello: "Здравствуйте! Мы — юридическая компания KHAMIDOV.UZ. Готовы ответить на ваши вопросы и помочь разобраться в ситуации.",
             success: 'Спасибо! Мы скоро свяжемся с вами 🙌',
             error: 'Ошибка сервера 😔',
             server: 'Сервер недоступен 😔',
@@ -537,7 +537,7 @@ O‘rtacha baho — 4.85.`
             }
         },
         chatbot: {
-            hello: 'Salom! 👋 Qanday yordam bera olaman?',
+            hello: "Assalomu alaykum. Biz — KHAMIDOV.UZ yuridik kompaniyasimiz. Savollaringizga javob berishga va masalangizni tushunishga yordam beramiz.",
             success: 'Rahmat! Tez orada siz bilan bog‘lanamiz 🙌',
             error: 'Server xatosi 😔',
             server: 'Server ishlamayapti 😔',

@@ -1,6 +1,10 @@
-// src/main.js
 import { createApp } from 'vue'
 import App from './App.vue'
-import './style.css'          // ← вот эта строка (путь к твоему css-файлу)
+import router from './router'
+import './style.css'
+import { i18n } from './i18n'
 
-createApp(App).mount('#app')
+createApp(App)
+    .use(router)
+    .use(i18n) // ← ВАЖНО: до mount
+    .mount('#app')

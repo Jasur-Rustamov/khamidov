@@ -130,7 +130,7 @@ const submitForm = async () => {
             <div class="mt-6">
 
                 <!-- BUTTON -->
-                <button class="w-full h-14 bg-[#008d80] text-white rounded-2xl font-bold">
+                <button @click="submitForm" class="w-full h-14 bg-[#008d80] text-white rounded-2xl font-bold">
                     {{ t('modal.button') }}
                 </button>
 

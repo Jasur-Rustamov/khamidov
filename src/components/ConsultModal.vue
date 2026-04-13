@@ -16,6 +16,9 @@ const problem = ref('')
 const time = ref('')
 const agree = ref(false)
 
+const success = ref(false)
+const loading = ref(false)
+
 const TELEGRAM_TOKEN = '8784415024:AAH9G1l6k7Y0G7m3DSNop1vF4c8HUh6ujY4'
 const CHAT_ID = '7814112802'
 
@@ -54,14 +57,31 @@ const submitForm = async () => {
         return
     }
 
-    await sendToTelegram()
+    try {
+        loading.value = true
 
-    name.value = ''
-    phone.value = ''
-    problem.value = ''
-    time.value = ''
+        await sendToTelegram()
 
-    emit('close')
+        success.value = true
+
+        // очистка формы
+        name.value = ''
+        phone.value = ''
+        problem.value = ''
+        time.value = ''
+        agree.value = false
+
+        // авто закрытие
+        setTimeout(() => {
+            success.value = false
+            emit('close')
+        }, 2000)
+
+    } catch (err) {
+        alert('Ошибка отправки')
+    } finally {
+        loading.value = false
+    }
 }
 </script>
 
@@ -77,6 +97,7 @@ const submitForm = async () => {
 
             <!-- TOP -->
             <div>
+
                 <!-- CLOSE -->
                 <button @click="closeModal"
                     class="absolute top-5 right-5 text-gray-400 hover:text-black text-xl transition">
@@ -91,6 +112,11 @@ const submitForm = async () => {
                 <p class="text-gray-500 mb-6 text-sm">
                     {{ t('modal.subtitle') }}
                 </p>
+
+                <!-- ✅ SUCCESS MESSAGE -->
+                <div v-if="success" class="mb-4 p-4 rounded-2xl bg-green-100 text-green-700 text-sm font-medium">
+                    {{ t('modal.success') }}
+                </div>
 
                 <!-- FORM -->
                 <div class="space-y-4">
@@ -107,8 +133,9 @@ const submitForm = async () => {
                     <input v-model="phone" type="text" :placeholder="t('modal.phonePlaceholder')"
                         class="w-full border border-gray-300 rounded-2xl p-4 outline-none focus:border-[#008d80] focus:ring-2 focus:ring-[#008d80]/20 transition" />
 
-                    <!-- TIME (🔥 добавили) -->
-                    <select v-model="time">
+                    <!-- TIME -->
+                    <select v-model="time"
+                        class="w-full border border-gray-300 rounded-2xl p-4 outline-none focus:border-[#008d80]">
                         <option disabled value="">
                             {{ t('modal.selectTime') }}
                         </option>
@@ -117,12 +144,13 @@ const submitForm = async () => {
                         <option>15:00</option>
                         <option>18:00</option>
                     </select>
-                    <br>
+
                     <!-- CHECKBOX -->
-                    <label>
-                        <input type="checkbox" v-model="agree" />
+                    <label class="flex items-start gap-2 text-sm text-gray-600">
+                        <input type="checkbox" v-model="agree" class="mt-1" />
                         {{ t('modal.agree') }}
                     </label>
+
                 </div>
             </div>
 
@@ -130,11 +158,15 @@ const submitForm = async () => {
             <div class="mt-6">
 
                 <!-- BUTTON -->
-                <button @click="submitForm" class="w-full h-14 bg-[#008d80] text-white rounded-2xl font-bold">
-                    {{ t('modal.button') }}
+                <button @click="submitForm"
+                    class="w-full h-14 bg-[#008d80] text-white rounded-2xl font-bold flex items-center justify-center"
+                    :disabled="loading">
+
+                    <span v-if="loading">Отправка...</span>
+                    <span v-else>{{ t('modal.button') }}</span>
                 </button>
 
-                <p>
+                <p class="text-xs text-gray-400 mt-3 text-center">
                     {{ t('modal.footer') }}
                 </p>
             </div>

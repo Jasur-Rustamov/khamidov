@@ -284,8 +284,11 @@ const messages = {
             name: 'Имя',
             phone: 'Телефон',
             time: 'Время',
-            problem: 'Проблема'
-        }
+            problem: 'Проблема',
+            success: 'Заявка успешно отправлена!'
+            
+        },
+        
 
     },
 
@@ -570,7 +573,8 @@ O‘rtacha baho — 4.85.`
             name: 'Ism',
             phone: 'Telefon',
             time: 'Vaqt',
-            problem: 'Muammo'
+            problem: 'Muammo',
+            success: 'Ariza muvaffaqiyatli yuborildi!'
         }
     }
 }

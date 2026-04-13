@@ -65,7 +65,7 @@ onBeforeUnmount(() => {
                     <div class="z-20 flex flex-col items-center bg-no-repeat bg-cover bg-right rounded-3xl overflow-hidden
                    p-8 md:p-12 lg:p-20
                    lg:absolute lg:left-[-190px] lg:top-30"
-                        style="background-image: url('/src/images/documents_back_2.svg')">
+                        style="background-image: url('../images/documents_back_2.svg')">
 
                         <p class="mt-3 mb-10 text-xl md:text-3xl font-light text-center text-[#008d80] max-w-xl">
                             {{ t('docs.cta') }}

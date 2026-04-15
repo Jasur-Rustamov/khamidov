@@ -1,13 +1,14 @@
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n'
 
-const { t, locale } = useI18n();
+const { t } = useI18n()
 
 const isOpen = ref(false);
 const messages = ref([]);
 const input = ref("");
 const loading = ref(false);
+const waitingPhone = ref(false);
 const chatRef = ref(null);
 
 // приветствие
@@ -15,7 +16,7 @@ onMounted(() => {
     setTimeout(() => {
         messages.value.push({
             role: "bot",
-            text: t("chatbot.hello"),
+            text: t('chatbot.hello'),
         });
     }, 500);
 });
@@ -29,7 +30,7 @@ const scrollToBottom = async () => {
     });
 };
 
-// печать
+// typing
 const typeText = async (text) => {
     let current = "";
     messages.value.push({ role: "bot", text: "" });
@@ -39,7 +40,7 @@ const typeText = async (text) => {
     for (let char of text) {
         current += char;
         messages.value[index].text = current;
-        await new Promise((r) => setTimeout(r, 10));
+        await new Promise((r) => setTimeout(r, 15));
         await scrollToBottom();
     }
 };
@@ -55,6 +56,15 @@ const sendMessage = async () => {
 
     await scrollToBottom();
 
+    if (waitingPhone.value) {
+        messages.value.push({
+            role: "bot",
+            text: t('chatbot.success'),
+        });
+        waitingPhone.value = false;
+        return;
+    }
+
     loading.value = true;
 
     try {
@@ -63,23 +73,45 @@ const sendMessage = async () => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                message: userMessage,
-                lang: locale.value, // 🔥 ВОТ ЭТО ГЛАВНОЕ
-            }),
+            body: JSON.stringify({ message: userMessage }),
         });
 
         const data = await res.json();
+
+        if (!res.ok) {
+            messages.value.push({
+                role: "bot",
+                text: data.details || t('chatbot.error'),
+            });
+            loading.value = false;
+            return;
+        }
 
         await typeText(data.reply);
     } catch {
         messages.value.push({
             role: "bot",
-            text: t("chatbot.server"),
+            text: t('chatbot.server'),
         });
     }
 
     loading.value = false;
+    await scrollToBottom();
+};
+
+// быстрые кнопки
+const quickAsk = () => {
+    input.value = t('chatbot.quick');
+    sendMessage();
+};
+
+// запрос телефона
+const requestPhone = () => {
+    messages.value.push({
+        role: "bot",
+        text: t('chatbot.phone'),
+    });
+    waitingPhone.value = true;
 };
 </script>
 

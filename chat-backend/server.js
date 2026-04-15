@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
@@ -13,16 +14,28 @@ const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
+
 // =======================
-// 🔹 ОПРЕДЕЛЕНИЕ ЯЗЫКА
+// 🔹 ОПРЕДЕЛЕНИЕ ЯЗЫКА (УЛУЧШЕННОЕ)
 // =======================
 function detectLanguage(text = "") {
     const msg = text.toLowerCase();
 
-    // явный выбор языка
+    // 🔥 узбек кириллица
+    if (
+        msg.includes("қ") ||
+        msg.includes("ғ") ||
+        msg.includes("ў") ||
+        msg.includes("ҳ")
+    ) {
+        return "uz";
+    }
+
+    // 🔥 явный выбор языка
     if (msg.includes("узбек") || msg.includes("o‘zbek") || msg.includes("uzbek")) {
         return "uz";
     }
+
     if (msg.includes("русск") || msg.includes("russian")) {
         return "ru";
     }
@@ -43,12 +56,14 @@ function detectLanguage(text = "") {
     return uzCount > ruCount ? "uz" : "ru";
 }
 
+
 // =======================
 // 🔹 НОРМАЛИЗАЦИЯ
 // =======================
 function normalizeText(text = "") {
     return text.toLowerCase().trim();
 }
+
 
 // =======================
 // 🔹 ФОРМАТ ОТВЕТА
@@ -57,8 +72,9 @@ function companyReply(text) {
     return { reply: text };
 }
 
+
 // =======================
-// 🔹 УМНЫЕ СТАТИЧЕСКИЕ ОТВЕТЫ (БЕЗ СПАМА НОМЕРОМ)
+// 🔹 СТАТИЧЕСКИЕ ОТВЕТЫ (БЕЗ ПРОДАЖИ)
 // =======================
 function getStaticReply(message, lang) {
     const msg = normalizeText(message);
@@ -85,15 +101,9 @@ function getStaticReply(message, lang) {
         return "Albatta, sizga o‘zbek tilida yordam bera olamiz. Savolingizni yozing.";
     }
 
-    // цена (без навязчивости)
-    if (msg.includes("цена") || msg.includes("стоимость") || msg.includes("narx")) {
-        return lang === "uz"
-            ? "Narx holatingizga qarab belgilanadi. Muammoni yozsangiz, aniqroq tushuntirib beramiz."
-            : "Стоимость зависит от вашей ситуации. Опишите подробнее, и мы подскажем ориентир.";
-    }
-
     return null;
 }
+
 
 // =======================
 // 🔹 CHAT ROUTE
@@ -110,7 +120,7 @@ app.post("/chat", async (req, res) => {
 
         const lang = detectLanguage(message);
 
-        // 🔥 статический ответ
+        // 🔥 быстрые ответы
         const staticReply = getStaticReply(message, lang);
         if (staticReply) {
             return res.json(companyReply(staticReply));
@@ -126,30 +136,33 @@ app.post("/chat", async (req, res) => {
                 {
                     role: "system",
                     content: `
-Вы — опытный юрист-консультант компании KHAMIDOV.UZ.
+Вы — профессиональный юрист-консультант компании KHAMIDOV.UZ.
 
-ПРАВИЛА:
+СТРОГИЕ ПРАВИЛА:
 - Отвечайте на том же языке, что и клиент
-- Отвечайте от имени компании (мы)
-- Не говорите что вы бот или ИИ
-- Пишите как живой специалист
-
-ГЛАВНОЕ:
-- Понять проблему клиента
-- Дать полезный совет
-- Объяснить простым языком
+- Компания работает на двух языках: узбекский и русский
+- НИКОГДА не говорите:
+  "мы отвечаем только на русском"
+  "мы не можем ответить"
+- Не придумывайте ограничения
 
 ЗАПРЕЩЕНО:
-- НЕ писать "оставьте номер" без причины
-- НЕ быть навязчивым
-- НЕ давать шаблонные ответы
+- говорить что вы бот или ИИ
+- давать шаблонные ответы
+- навязывать оставить номер
 
-МОЖНО:
-- задавать уточняющие вопросы
-- объяснять варианты решения
+ЗАДАЧА:
+- понять проблему клиента
+- дать полезный совет
+- объяснить решение
 
-ПРИМЕР ХОРОШЕГО ОТВЕТА:
-"В вашей ситуации важно уточнить, есть ли договор. Если он есть, можно рассмотреть…"
+СТИЛЬ:
+- как живой юрист
+- понятно и по делу
+- можно задавать уточняющие вопросы
+
+ПРИМЕР:
+"В вашей ситуации важно уточнить детали. Скажите, есть ли у вас договор?"
           `.trim(),
                 },
                 {
@@ -166,17 +179,17 @@ app.post("/chat", async (req, res) => {
                 : "Извините, попробуйте еще раз.");
 
         // =======================
-        // 🔥 ФИЛЬТР ПРОДАЖ (УБИРАЕМ НОМЕР)
+        // 🔥 АНТИ-БАГ ФИЛЬТР
         // =======================
         if (
-            reply.includes("оставьте номер") ||
-            reply.includes("оставьте ваш номер") ||
-            reply.includes("7 минут")
+            reply.includes("только на русском") ||
+            reply.includes("не можем отвечать") ||
+            reply.includes("фақат рус")
         ) {
-            reply = reply.replace(
-                /оставьте.*номер.*\./gi,
-                ""
-            ).trim();
+            reply =
+                lang === "uz"
+                    ? "Albatta, sizga o‘zbek tilida yordam beramiz. Muammoingizni yozing."
+                    : "Мы можем ответить на вашем языке. Опишите ситуацию подробнее.";
         }
 
         return res.json(companyReply(reply));
@@ -190,8 +203,9 @@ app.post("/chat", async (req, res) => {
     }
 });
 
+
 // =======================
-// 🔹 START
+// 🔹 СТАРТ
 // =======================
 const PORT = process.env.PORT || 3000;
 

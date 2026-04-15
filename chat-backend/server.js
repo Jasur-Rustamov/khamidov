@@ -14,7 +14,6 @@ const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-// простой формат ответа
 function companyReply(text) {
     return { reply: text };
 }

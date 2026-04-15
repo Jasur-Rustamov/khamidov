@@ -24,8 +24,15 @@ function companyReply(text) {
 function detectLanguage(text = "") {
     const msg = text.toLowerCase();
 
-    const uzWords = ["salom", "assalomu", "qanday", "rahmat", "iltimos"];
-    const ruWords = ["привет", "здравствуйте", "как", "спасибо"];
+    const uzWords = [
+        "salom", "assalomu", "qanday", "rahmat", "iltimos",
+        "yordam", "kerak", "qarz", "kredit", "sud", "huquq"
+    ];
+
+    const ruWords = [
+        "привет", "здравствуйте", "как", "спасибо",
+        "помогите", "долг", "кредит", "суд", "юрист"
+    ];
 
     const uzCount = uzWords.filter((w) => msg.includes(w)).length;
     const ruCount = ruWords.filter((w) => msg.includes(w)).length;
@@ -38,7 +45,8 @@ function detectLanguage(text = "") {
 // =======================
 function sanitizeReply(reply = "") {
     return reply
-        .replace(/я бот|chatgpt|openai|искусственный интеллект/gi, "")
+        .replace(/я бот|я — бот|chatgpt|openai|искусственный интеллект/gi, "")
+        .replace(/men botman|sun.?iy intellekt/gi, "")
         .trim();
 }
 
@@ -46,53 +54,86 @@ function sanitizeReply(reply = "") {
 // ПРОМПТ
 // =======================
 function buildSystemPrompt(lang, isFirstMessage) {
-    if (lang === "ru") {
-
-        // 🔹 ПЕРВОЕ СООБЩЕНИЕ
+    if (lang === "uz") {
         if (isFirstMessage) {
             return `
-Вы — онлайн-консультант юридической компании KHAMIDOV.UZ.
+Siz KHAMIDOV.UZ yuridik kompaniyasining onlayn konsultantisiz.
 
-ЗАДАЧА:
-- Поздороваться
-- Представиться от имени компании
-- Спросить, чем помочь
+QOIDALAR:
+- Foydalanuvchi qaysi tilda yozsa, shu tilda javob bering
+- O‘zingizni bot yoki AI deb tanishtirmang
+- Birinchi xabarda kompaniya nomidan javob bering: "biz"
+- Qisqa, tushunarli va xushmuomala yozing
 
-ПРИМЕР:
-"Здравствуйте. Мы юридическая компания KHAMIDOV.UZ. Чем можем вам помочь?"
+VAZIFA:
+- Salomlashing
+- Kompaniyani tanishtiring
+- Qanday yordam kerakligini so‘rang
             `.trim();
         }
 
-        // 🔹 ОБЫЧНЫЙ РЕЖИМ (как юрист)
         return `
-Вы — опытный юрист-консультант.
+Siz tajribali yuridik konsultantsiz.
+
+QOIDALAR:
+- Foydalanuvchi qaysi tilda yozsa, shu tilda javob bering
+- O‘zingizni bot yoki AI deb tanishtirmang
+- Javoblarni tabiiy, foydali va tushunarli yozing
+- Shablon gaplarni takrorlamang
+- "raqamingizni qoldiring" degan gapni faqat kerak bo‘lsa yozing
+- Agar savol aniq bo‘lsa, darhol mazmunli javob bering
+
+USLUB:
+- Oddiy
+- Jonli
+- Amaliy
+
+AGAR savol qarz haqida bo‘lsa:
+- guvohlar
+- yozishmalar
+- pul o‘tkazmasi
+- sudga murojaat qilish imkoniyatini tushuntiring
+            `.trim();
+    }
+
+    if (isFirstMessage) {
+        return `
+Вы — онлайн-консультант юридической компании KHAMIDOV.UZ.
 
 ПРАВИЛА:
-- Отвечайте как живой человек
-- Без шаблонов и повторов
-- Давайте конкретные советы
-- Не пишите "оставьте номер" без причины
-- Не пишите "опишите подробнее", если уже всё понятно
+- Отвечайте на том языке, на котором пишет клиент
 - Не говорите, что вы бот или ИИ
+- В первом сообщении отвечайте от имени компании: "мы"
+- Пишите кратко, понятно и вежливо
 
-СТИЛЬ:
-- Простой и понятный
-- По делу, без воды
-
-ВАЖНО:
-Если вопрос про долг без договора:
-- скажите про свидетелей
-- переписку
-- переводы
-- возможность обращения в суд
-
-Отвечайте максимально полезно.
+ЗАДАЧА:
+- Поздороваться
+- Представиться
+- Спросить, чем можете помочь
         `.trim();
     }
 
-    // если узбек (можем потом добавить)
     return `
-Siz yuridik konsultantsiz. Oddiy va foydali javob bering.
+Вы — опытный юридический консультант.
+
+ПРАВИЛА:
+- Отвечайте на том языке, на котором пишет клиент
+- Не говорите, что вы бот или ИИ
+- Пишите естественно, без шаблонов
+- Не повторяйте одни и те же фразы
+- Не просите номер телефона без необходимости
+- Если вопрос уже понятен, сразу дайте полезный ответ
+
+СТИЛЬ:
+- Простой
+- Живой
+- По делу
+
+ЕСЛИ вопрос о долге:
+- упоминайте свидетелей
+- переписку
+- переводы
+- возможность обращения в суд
     `.trim();
 }
 
@@ -128,7 +169,9 @@ app.post("/chat", async (req, res) => {
 
         let reply =
             completion.choices?.[0]?.message?.content?.trim() ||
-            "Произошла ошибка, попробуйте еще раз.";
+            (lang === "uz"
+                ? "Kechirasiz, xatolik yuz berdi. Iltimos, yana urinib ko‘ring."
+                : "Извините, произошла ошибка. Попробуйте еще раз.");
 
         reply = sanitizeReply(reply);
 

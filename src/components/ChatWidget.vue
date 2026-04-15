@@ -1,8 +1,6 @@
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
-import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
 
 const isOpen = ref(false);
 const messages = ref([]);

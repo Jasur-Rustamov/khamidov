@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
+import { useI18n } from "vue-i18n";
 
+const { t, locale } = useI18n();
 
 const isOpen = ref(false);
 const messages = ref([]);
@@ -13,7 +15,7 @@ onMounted(() => {
     setTimeout(() => {
         messages.value.push({
             role: "bot",
-            text: "Здравствуйте! Чем могу помочь?",
+            text: t("chatbot.hello"),
         });
     }, 500);
 });
@@ -63,6 +65,7 @@ const sendMessage = async () => {
             },
             body: JSON.stringify({
                 message: userMessage,
+                lang: locale.value, // 🔥 ВОТ ЭТО ГЛАВНОЕ
             }),
         });
 
@@ -72,7 +75,7 @@ const sendMessage = async () => {
     } catch {
         messages.value.push({
             role: "bot",
-            text: "Ошибка сервера",
+            text: t("chatbot.server"),
         });
     }
 
@@ -91,14 +94,13 @@ const sendMessage = async () => {
     <transition name="chat">
         <div v-if="isOpen"
             class="fixed bottom-20 right-4 z-50 w-[95%] sm:w-[370px] max-h-[80vh] bg-white shadow-2xl rounded-3xl flex flex-col overflow-hidden border border-gray-200">
-
             <!-- header -->
             <div class="bg-gradient-to-r from-[#008d80] to-[#00bfa6] text-white p-4 flex justify-between items-center">
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                        💬
+                        🤖
                     </div>
-                    <span class="font-semibold">Онлайн чат</span>
+                    <span class="font-semibold">{{ t('chatbot.title') }}</span>
                 </div>
                 <button @click="isOpen = false">✕</button>
             </div>
@@ -109,15 +111,16 @@ const sendMessage = async () => {
                     <div :class="msg.role === 'user'
                         ? 'flex justify-end'
                         : 'flex items-start gap-2'">
-
+                        <!-- аватар -->
                         <div v-if="msg.role === 'bot'"
                             class="w-7 h-7 bg-[#008d80] text-white rounded-full flex items-center justify-center text-sm">
-                            💬
+                            🤖
                         </div>
 
+                        <!-- сообщение -->
                         <div :class="msg.role === 'user'
-                            ? 'bg-[#008d80] text-white'
-                            : 'bg-gray-100 text-gray-800'"
+                            ? 'bg-[#008d80] text-white shadow-md'
+                            : 'bg-gray-100 text-gray-800 shadow-sm'"
                             class="px-4 py-2 rounded-2xl max-w-[75%] text-[14px] leading-5">
                             {{ msg.text }}
                         </div>
@@ -125,20 +128,68 @@ const sendMessage = async () => {
                 </div>
 
                 <div v-if="loading">
-                    Печатает...
+                    {{ t('chatbot.typing') }}
                 </div>
+            </div>
+
+            <!-- FAQ -->
+            <div class="p-2 flex flex-wrap gap-2 border-t bg-white">
+                <button @click="quickAsk" class="chip">
+                    📞 {{ t('chatbot.contacts') }}
+                </button>
+
+                <button @click="requestPhone" class="chip-primary">
+                    📲 {{ t('chatbot.leave') }}
+                </button>
             </div>
 
             <!-- input -->
             <div class="flex items-center border-t bg-white px-2 py-2">
-                <input v-model="input" @keydown.enter.prevent="sendMessage" placeholder="Напишите сообщение..."
-                    class="flex-1 px-4 py-3 text-sm border rounded-xl outline-none focus:ring-2 focus:ring-[#008d80] bg-gray-50" />
-
+                <input v-model="input" @keydown.enter.prevent="sendMessage" :placeholder="t('chatbot.placeholder')"
+                    class="flex-1 px-4 py-3 text-sm border text-[#008d80] rounded-xl outline-none focus:ring-2 focus:ring-[#008d80] bg-gray-50" />
                 <button @click="sendMessage"
-                    class="bg-[#008d80] text-white px-5 py-2 rounded-xl ml-2 hover:scale-105 transition">
+                    class="bg-[#008d80] text-white px-5 py-2 rounded-xl ml-2 shadow hover:scale-105 transition">
                     ➤
                 </button>
             </div>
         </div>
     </transition>
 </template>
+
+<style>
+.chat-enter-active,
+.chat-leave-active {
+    transition: all 0.3s ease;
+}
+
+.chat-enter-from,
+.chat-leave-to {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+}
+
+.chip {
+    background: #e2e8f0;
+    color: #1e293b;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.chip:hover {
+    background: #cbd5f5;
+}
+
+.chip-primary {
+    background: #008d80;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+}
+
+.chip-primary:hover {
+    opacity: 0.9;
+}
+</style>

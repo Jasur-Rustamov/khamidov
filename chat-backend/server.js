@@ -14,17 +14,50 @@ const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-// нормализация
+
+// =======================
+// 🔹 ОПРЕДЕЛЕНИЕ ЯЗЫКА
+// =======================
+function detectLanguage(text = "") {
+    const msg = text.toLowerCase();
+
+    const uzWords = [
+        "salom", "qanday", "yordam", "kerak", "rahmat", "iltimos",
+        "muammo", "ha", "yo‘q", "yoq", "emas", "qancha", "narx"
+    ];
+
+    const ruWords = [
+        "привет", "здравствуйте", "как", "помочь", "нужно",
+        "спасибо", "пожалуйста", "проблема", "да", "нет",
+        "сколько", "цена"
+    ];
+
+    const uzCount = uzWords.filter(w => msg.includes(w)).length;
+    const ruCount = ruWords.filter(w => msg.includes(w)).length;
+
+    return uzCount > ruCount ? "uz" : "ru";
+}
+
+
+// =======================
+// 🔹 НОРМАЛИЗАЦИЯ
+// =======================
 function normalizeText(text = "") {
     return text.toLowerCase().trim();
 }
 
-// ответ компании
+
+// =======================
+// 🔹 ФОРМАТ ОТВЕТА
+// =======================
 function companyReply(text) {
     return { reply: text };
 }
 
-// быстрые ответы
+
+// =======================
+// 🔹 БЫСТРЫЕ ОТВЕТЫ
+// =======================
 function getStaticReply(message, lang) {
     const msg = normalizeText(message);
 
@@ -35,50 +68,81 @@ function getStaticReply(message, lang) {
     }
 
     // кто ты
-    if (msg.includes("кто ты") || msg.includes("ты кто") || msg.includes("bot")) {
+    if (
+        msg.includes("кто ты") ||
+        msg.includes("ты кто") ||
+        msg.includes("вы кто") ||
+        msg.includes("bot")
+    ) {
         return lang === "uz"
             ? "Biz — KHAMIDOV.UZ yuridik kompaniyamiz. Sizga qanday yordam bera olamiz?"
             : "Мы — юридическая компания KHAMIDOV.UZ. Чем можем помочь?";
     }
 
     // цена
-    if (msg.includes("цена") || msg.includes("стоимость")) {
+    if (
+        msg.includes("цена") ||
+        msg.includes("стоимость") ||
+        msg.includes("сколько") ||
+        msg.includes("narx") ||
+        msg.includes("qancha")
+    ) {
         return lang === "uz"
             ? "Narx sizning holatingizga bog‘liq. Batafsil yozing yoki raqamingizni qoldiring 📞"
             : "Стоимость зависит от вашей ситуации. Опишите вопрос или оставьте номер 📞";
     }
 
     // контакты
-    if (msg.includes("номер") || msg.includes("телефон")) {
+    if (
+        msg.includes("номер") ||
+        msg.includes("телефон") ||
+        msg.includes("aloqa") ||
+        msg.includes("raqam")
+    ) {
         return lang === "uz"
             ? "Raqamingizni qoldiring, 7 daqiqada bog‘lanamiz 📞"
             : "Оставьте номер, и мы свяжемся с вами в течение 7 минут 📞";
     }
 
+    // долги / банкротство
+    if (
+        msg.includes("долг") ||
+        msg.includes("кредит") ||
+        msg.includes("банкрот") ||
+        msg.includes("qarz")
+    ) {
+        return lang === "uz"
+            ? "Biz qarzlar va bankrotlik masalalarida yordam beramiz. Batafsil yozing."
+            : "Мы помогаем с долгами и банкротством. Опишите вашу ситуацию подробнее.";
+    }
+
     return null;
 }
 
+
+// =======================
+// 🔹 ОСНОВНОЙ РОУТ
+// =======================
 app.post("/chat", async (req, res) => {
     try {
-        const { message, lang = "ru" } = req.body ?? {};
+        const { message } = req.body ?? {};
 
         if (!message) {
             return res.status(400).json(
-                companyReply(
-                    lang === "uz"
-                        ? "Iltimos, savolingizni yozing."
-                        : "Пожалуйста, напишите ваш вопрос."
-                )
+                companyReply("Пожалуйста, напишите сообщение.")
             );
         }
 
-        // быстрые ответы
+        // 🔥 авто определение языка
+        const lang = detectLanguage(message);
+
+        // 🔥 быстрые ответы
         const staticReply = getStaticReply(message, lang);
         if (staticReply) {
             return res.json(companyReply(staticReply));
         }
 
-        // язык
+        // язык для prompt
         const language = lang === "uz" ? "узбекском" : "русском";
 
         const completion = await client.chat.completions.create({
@@ -88,14 +152,15 @@ app.post("/chat", async (req, res) => {
                 {
                     role: "system",
                     content: `
-Вы — консультант юридической компании KHAMIDOV.UZ.
+Вы — онлайн консультант юридической компании KHAMIDOV.UZ.
 
-Правила:
+ВАЖНО:
 - Отвечайте строго на ${language} языке
-- Говорите от имени компании (мы, наша компания)
+- Отвечайте от имени компании (мы, наша компания)
 - Не говорите что вы бот или ИИ
-- Будьте краткими, уверенными и вежливыми
-- Предлагайте оставить номер при необходимости
+- Пишите кратко, понятно и профессионально
+- Обращайтесь на "вы"
+- При необходимости предлагайте оставить номер телефона
 
 Пример:
 "Мы поможем вам разобраться. Опишите ситуацию подробнее."
@@ -115,6 +180,7 @@ app.post("/chat", async (req, res) => {
                 : "Извините, попробуйте еще раз.");
 
         return res.json(companyReply(reply));
+
     } catch (error) {
         console.error("CHAT ERROR:", error);
 
@@ -126,8 +192,12 @@ app.post("/chat", async (req, res) => {
     }
 });
 
+
+// =======================
+// 🔹 СТАРТ СЕРВЕРА
+// =======================
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
 });

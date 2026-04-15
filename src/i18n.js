@@ -118,17 +118,17 @@ const messages = {
 
             resultTitle: 'Что вы получите:',
             result1: 'Прогнозы разрешения вашего кейса',
-            result2: 'Подберем опытного юриста'
+            result2: 'Для каждого вопроса я предлагаю отдельное юридическое решение.'
         },
         chat: {
             contact: 'СВЯЖИТЕСЬ',
             contactText: 'с нами любым удобным способом — звонок, форма или мессенджер.',
 
             get: 'ПОЛУЧИТЕ',
-            getText: 'консультацию. Все материалы по вашему кейсу сохраняются.',
+            getText: 'вся информация остается конфиденциальной.',
 
             describe: 'ОПИШИТЕ',
-            describeText: 'ситуацию и расскажите детали. Мы подберем юриста.',
+            describeText: 'Я предоставлю вам индивидуальные юридические и правовые решения.',
 
             placeholder: 'Сообщение...',
 
@@ -410,17 +410,17 @@ const messages = {
             phone: 'Telefon',
             resultTitle: 'Nimani olasiz:',
             result1: 'Muammoning yechim prognozi',
-            result2: 'Tajribali yurist tanlab beramiz'
+            result2: 'Har bir masalaga alohida yuridik yechim beraman'
         },
         chat: {
             contact: 'BOG‘LANING',
             contactText: 'biz bilan qulay usulda — qo‘ng‘iroq, forma yoki messenjer.',
 
             get: 'OLING',
-            getText: 'konsultatsiya. Barcha materiallar saqlanadi.',
+            getText: 'barcha ma`lumotlar maxfiyligicha qoladi',
 
             describe: 'TAVSIFLANG',
-            describeText: 'holatni batafsil yozing. Sizga mos yurist topamiz.',
+            describeText: 'sizga Individual yuridik va huquqiy yechimlar beraman',
 
             placeholder: 'Xabar...',
 

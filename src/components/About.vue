@@ -11,10 +11,6 @@ const { t } = useI18n()
             <!-- Заголовок -->
             <h2 class="text-center text-[42px] font-semibold text-gray-900 mb-16">
                 {{ t('about.title') }}
-                <span class="relative text-[#008d80]">
-                    KHAMIDOV
-                    <span class="absolute left-0 -bottom-2 w-full h-[4px] bg-[#008d80] rounded-full"></span>
-                </span>
             </h2>
 
             <!-- Карточка -->

@@ -6,7 +6,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
@@ -14,22 +13,28 @@ const client = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-
 // =======================
 // 🔹 ОПРЕДЕЛЕНИЕ ЯЗЫКА
 // =======================
 function detectLanguage(text = "") {
     const msg = text.toLowerCase();
 
+    // явный выбор языка
+    if (msg.includes("узбек") || msg.includes("o‘zbek") || msg.includes("uzbek")) {
+        return "uz";
+    }
+    if (msg.includes("русск") || msg.includes("russian")) {
+        return "ru";
+    }
+
     const uzWords = [
         "salom", "qanday", "yordam", "kerak", "rahmat", "iltimos",
-        "muammo", "ha", "yo‘q", "yoq", "emas", "qancha", "narx"
+        "muammo", "ha", "yo‘q", "emas", "qancha", "narx"
     ];
 
     const ruWords = [
         "привет", "здравствуйте", "как", "помочь", "нужно",
-        "спасибо", "пожалуйста", "проблема", "да", "нет",
-        "сколько", "цена"
+        "спасибо", "пожалуйста", "проблема", "да", "нет", "сколько", "цена"
     ];
 
     const uzCount = uzWords.filter(w => msg.includes(w)).length;
@@ -38,14 +43,12 @@ function detectLanguage(text = "") {
     return uzCount > ruCount ? "uz" : "ru";
 }
 
-
 // =======================
 // 🔹 НОРМАЛИЗАЦИЯ
 // =======================
 function normalizeText(text = "") {
     return text.toLowerCase().trim();
 }
-
 
 // =======================
 // 🔹 ФОРМАТ ОТВЕТА
@@ -54,9 +57,8 @@ function companyReply(text) {
     return { reply: text };
 }
 
-
 // =======================
-// 🔹 БЫСТРЫЕ ОТВЕТЫ
+// 🔹 УМНЫЕ СТАТИЧЕСКИЕ ОТВЕТЫ (БЕЗ СПАМА НОМЕРОМ)
 // =======================
 function getStaticReply(message, lang) {
     const msg = normalizeText(message);
@@ -64,64 +66,37 @@ function getStaticReply(message, lang) {
     if (!msg) {
         return lang === "uz"
             ? "Savolingizni yozing, yordam beramiz."
-            : "Опишите ваш вопрос, и мы постараемся помочь.";
+            : "Опишите вашу ситуацию, постараемся помочь.";
     }
 
-    // кто ты
+    // кто вы
     if (
         msg.includes("кто ты") ||
         msg.includes("ты кто") ||
-        msg.includes("вы кто") ||
-        msg.includes("bot")
+        msg.includes("вы кто")
     ) {
         return lang === "uz"
-            ? "Biz — KHAMIDOV.UZ yuridik kompaniyamiz. Sizga qanday yordam bera olamiz?"
-            : "Мы — юридическая компания KHAMIDOV.UZ. Чем можем помочь?";
+            ? "Biz — KHAMIDOV.UZ yuridik kompaniyamiz. Qanday masalada yordam kerak?"
+            : "Мы — юридическая компания KHAMIDOV.UZ. По какому вопросу нужна помощь?";
     }
 
-    // цена
-    if (
-        msg.includes("цена") ||
-        msg.includes("стоимость") ||
-        msg.includes("сколько") ||
-        msg.includes("narx") ||
-        msg.includes("qancha")
-    ) {
-        return lang === "uz"
-            ? "Narx sizning holatingizga bog‘liq. Batafsil yozing yoki raqamingizni qoldiring 📞"
-            : "Стоимость зависит от вашей ситуации. Опишите вопрос или оставьте номер 📞";
+    // язык
+    if (msg.includes("узбек") || msg.includes("o‘zbek")) {
+        return "Albatta, sizga o‘zbek tilida yordam bera olamiz. Savolingizni yozing.";
     }
 
-    // контакты
-    if (
-        msg.includes("номер") ||
-        msg.includes("телефон") ||
-        msg.includes("aloqa") ||
-        msg.includes("raqam")
-    ) {
+    // цена (без навязчивости)
+    if (msg.includes("цена") || msg.includes("стоимость") || msg.includes("narx")) {
         return lang === "uz"
-            ? "Raqamingizni qoldiring, 7 daqiqada bog‘lanamiz 📞"
-            : "Оставьте номер, и мы свяжемся с вами в течение 7 минут 📞";
-    }
-
-    // долги / банкротство
-    if (
-        msg.includes("долг") ||
-        msg.includes("кредит") ||
-        msg.includes("банкрот") ||
-        msg.includes("qarz")
-    ) {
-        return lang === "uz"
-            ? "Biz qarzlar va bankrotlik masalalarida yordam beramiz. Batafsil yozing."
-            : "Мы помогаем с долгами и банкротством. Опишите вашу ситуацию подробнее.";
+            ? "Narx holatingizga qarab belgilanadi. Muammoni yozsangiz, aniqroq tushuntirib beramiz."
+            : "Стоимость зависит от вашей ситуации. Опишите подробнее, и мы подскажем ориентир.";
     }
 
     return null;
 }
 
-
 // =======================
-// 🔹 ОСНОВНОЙ РОУТ
+// 🔹 CHAT ROUTE
 // =======================
 app.post("/chat", async (req, res) => {
     try {
@@ -133,37 +108,49 @@ app.post("/chat", async (req, res) => {
             );
         }
 
-        // 🔥 авто определение языка
         const lang = detectLanguage(message);
 
-        // 🔥 быстрые ответы
+        // 🔥 статический ответ
         const staticReply = getStaticReply(message, lang);
         if (staticReply) {
             return res.json(companyReply(staticReply));
         }
 
-        // язык для prompt
-        const language = lang === "uz" ? "узбекском" : "русском";
-
+        // =======================
+        // 🔹 OPENAI
+        // =======================
         const completion = await client.chat.completions.create({
             model: "gpt-4o-mini",
-            temperature: 0.3,
+            temperature: 0.4,
             messages: [
                 {
                     role: "system",
                     content: `
-Вы — онлайн консультант юридической компании KHAMIDOV.UZ.
+Вы — опытный юрист-консультант компании KHAMIDOV.UZ.
 
-ВАЖНО:
-- Отвечайте строго на ${language} языке
-- Отвечайте от имени компании (мы, наша компания)
+ПРАВИЛА:
+- Отвечайте на том же языке, что и клиент
+- Отвечайте от имени компании (мы)
 - Не говорите что вы бот или ИИ
-- Пишите кратко, понятно и профессионально
-- Обращайтесь на "вы"
+- Пишите как живой специалист
 
-Пример:
-"Мы поможем вам разобраться. Опишите ситуацию подробнее."
-                    `.trim(),
+ГЛАВНОЕ:
+- Понять проблему клиента
+- Дать полезный совет
+- Объяснить простым языком
+
+ЗАПРЕЩЕНО:
+- НЕ писать "оставьте номер" без причины
+- НЕ быть навязчивым
+- НЕ давать шаблонные ответы
+
+МОЖНО:
+- задавать уточняющие вопросы
+- объяснять варианты решения
+
+ПРИМЕР ХОРОШЕГО ОТВЕТА:
+"В вашей ситуации важно уточнить, есть ли договор. Если он есть, можно рассмотреть…"
+          `.trim(),
                 },
                 {
                     role: "user",
@@ -172,11 +159,25 @@ app.post("/chat", async (req, res) => {
             ],
         });
 
-        const reply =
+        let reply =
             completion.choices?.[0]?.message?.content?.trim() ||
             (lang === "uz"
                 ? "Kechirasiz, yana urinib ko‘ring."
                 : "Извините, попробуйте еще раз.");
+
+        // =======================
+        // 🔥 ФИЛЬТР ПРОДАЖ (УБИРАЕМ НОМЕР)
+        // =======================
+        if (
+            reply.includes("оставьте номер") ||
+            reply.includes("оставьте ваш номер") ||
+            reply.includes("7 минут")
+        ) {
+            reply = reply.replace(
+                /оставьте.*номер.*\./gi,
+                ""
+            ).trim();
+        }
 
         return res.json(companyReply(reply));
 
@@ -184,16 +185,13 @@ app.post("/chat", async (req, res) => {
         console.error("CHAT ERROR:", error);
 
         return res.status(500).json(
-            companyReply(
-                "Сервер временно недоступен. Попробуйте позже."
-            )
+            companyReply("Сервер временно недоступен. Попробуйте позже.")
         );
     }
 });
 
-
 // =======================
-// 🔹 СТАРТ СЕРВЕРА
+// 🔹 START
 // =======================
 const PORT = process.env.PORT || 3000;
 

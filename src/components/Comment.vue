@@ -29,6 +29,12 @@ const cards = computed(() => [
         avatar: img,
         href: "#"
     },
+    // {
+    //     name: t('team.c4.name'),
+    //     role: t('team.c4.role'),
+    //     avatar: img,
+    //     href: "#"
+    // },
 ])
 </script>
 
@@ -39,9 +45,6 @@ const cards = computed(() => [
             <!-- TITLE -->
             <h2 class="text-center font-medium text-4xl sm:text-4xl lg:text-[60px] leading-[1.1]">
                 {{ t('team.title1') }}
-                <br />
-                {{ t('team.title2') }}
-                <span class="text-[#008d80]"> {{ t('team.highlight') }} </span>
             </h2>
 
             <!-- CARDS -->
@@ -69,17 +72,6 @@ const cards = computed(() => [
                                 </div>
                             </div>
                         </div>
-
-                        <div class="h-[140px] sm:h-[160px] lg:h-[190px]" />
-
-                        <div class="flex justify-end">
-                            <a :href="c.href"
-                                class="inline-flex items-center gap-2 text-[15px] sm:text-[16px] font-semibold text-[#008d80]">
-                                {{ t('team.read') }}
-                                <span class="text-[18px] group-hover:translate-x-1">→</span>
-                            </a>
-                        </div>
-
                     </div>
                 </article>
 

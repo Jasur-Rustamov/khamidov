@@ -1,19 +1,20 @@
 <script setup>
+import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 const route = useRoute()
 const router = useRouter()
 
-// 🌍 i18n
 const { locale, t } = useI18n()
+const search = ref('')
 
 const changeLang = (lang) => {
     locale.value = lang
     localStorage.setItem('lang', lang)
 }
 
-const scrollToServices = async () => {
+const changeAndScroll = async () => {
     if (route.path !== '/') {
         await router.push('/')
 
@@ -32,6 +33,28 @@ const scrollToServices = async () => {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
 }
+
+const onSearch = async () => {
+    if (!search.value.trim()) return
+
+    if (route.path !== '/') {
+        await router.push({
+            path: '/',
+            query: { search: search.value }
+        })
+    } else {
+        await router.push({
+            query: { ...route.query, search: search.value }
+        })
+    }
+
+    setTimeout(() => {
+        const el = document.getElementById('services')
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+    }, 300)
+}
 </script>
 
 <template>
@@ -45,15 +68,15 @@ const scrollToServices = async () => {
                         khamidov.uz
                     </h1>
 
-                    <button @click="scrollToServices"
+                    <button @click="changeAndScroll"
                         class="flex h-11 items-center gap-2 rounded-full bg-[#008d80] px-5 text-sm font-medium text-white hover:opacity-90 transition">
                         {{ t('header.services') }}
                     </button>
 
                     <div class="hidden md:flex flex-1 mx-6 max-w-xl">
-                        <input type="text" :placeholder="t('header.search')"
+                        <input v-model="search" @keyup.enter="onSearch" type="text" :placeholder="t('header.search')"
                             class="h-11 w-full rounded-l-full border border-gray-300 px-4 outline-none focus:border-[#008d80]" />
-                        <button class="h-11 rounded-r-full bg-[#008d80] px-6 text-sm text-white">
+                        <button @click="onSearch" class="h-11 rounded-r-full bg-[#008d80] px-6 text-sm text-white">
                             {{ t('header.find') }}
                         </button>
                     </div>
@@ -78,10 +101,21 @@ const scrollToServices = async () => {
                     </div>
 
                     <!-- TELEGRAM -->
-                    <div class="hidden lg:flex gap-5 text-[#008d80]">
+                    <!-- TELEGRAM + WHATSAPP -->
+                    <div class="hidden lg:flex gap-4 items-center text-[#008d80]">
+
+                        <!-- TELEGRAM -->
                         <a href="https://t.me/Khamdwww" target="_blank">
-                            <img src="../images/icons8-телеграм-50.png" class="w-6 hover:scale-110 transition" />
+                            <img src="../images/icons8-телеграм-50.png"
+                                class="w-6 hover:scale-110 transition duration-200" />
                         </a>
+
+                        <!-- WHATSAPP -->
+                        <a href="https://wa.me/998901605156" target="_blank">
+                            <img src="../images/icons8-whatsapp-50.png"
+                                class="w-6 hover:scale-110 transition duration-200" />
+                        </a>
+
                     </div>
 
                     <!-- PHONE -->

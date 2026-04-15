@@ -5,7 +5,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-    <section class="bg-[#f3f4f6] py-20">
+    <section id="about" class="bg-[#f3f4f6] py-20">
         <div class="max-w-[1200px] mx-auto px-6">
 
             <!-- Заголовок -->

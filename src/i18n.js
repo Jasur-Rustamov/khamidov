@@ -17,16 +17,16 @@ const messages = {
         },
         stats: {
             n1: '1 000+',
-            s1: 'Нам доверяют решение своих вопросов',
+            s1: 'Мне доверяют решение своих вопросов',
 
             n2: '> 350',
             s2: 'Клиентов получили юридическую помощь',
 
-            n3: '29 лет',
-            s3: 'Успешно отстаиваем права наших клиентов',
+            n3: '2 лет',
+            s3: 'Успешно отстаиваю права наших клиентов',
 
             n4: '26 лет',
-            s4: 'Средний стаж специалиста нашей компании'
+            s4: 'Я юрист с опытом работы в сфере права.'
         },
         services: {
             title: 'Выберите',
@@ -146,28 +146,29 @@ const messages = {
             i3: 'Проведем процедуру'
         },
         team: {
-            title1: 'Комментируем изменения в законе',
-            title2: 'для',
-            highlight: 'прессы',
-            read: 'Читать',
+            title1: 'Что говорят о нас наши клиенты?',
 
             c1: {
-                name: 'Ибрагимова Нурида',
-                role: 'Руководитель департамента\nконтроля качества'
+                name: 'Акмаль Каримов',
+                role: 'Поначалу я немного скептически относился к возможности связаться с юристом онлайн. Но после работы с этим сервисом мое мнение полностью изменилось. Я получил очень быстрый ответ на свой вопрос, все мои документы были тщательно проверены, и были даны четкие юридические рекомендации. Самое главное, я чувствовал, что вся моя информация хранится в полной конфиденциальности. Действительно надежный и современный сервис.'
             },
 
             c2: {
-                name: 'Проскурова Елена',
-                role: 'Руководитель практики частного\nправа'
+                name: 'Дилноза Рахимова',
+                role: 'Мне было очень удобно получить юридическую помощь дистанционно. Мое дело было очень срочным, и адвокат в короткие сроки объяснил решение проблемы. Во время консультации я получал подробные и простые ответы на каждый из моих вопросов. Большую помощь оказали также в проверке и исправлении документов. Профессиональный подход и внимание к клиенту находятся на высоком уровне.'
             },
 
             c3: {
-                name: 'Титов Александр',
-                role: 'Ведущий юрист практики\nжилищного права и социальных\nотношений'
+                name: 'Жасур Турсунов',
+                role: 'Я воспользовался онлайн-чатом на сайте и меня мгновенно связали. Необходимая мне юридическая консультация была четко объяснена с учетом законодательства. Ранее я обращался в другие организации, но нигде не встречал такой скорости и точности. Самое приятное было то, что каждый мой вопрос был серьезно рассмотрен, и было предложено наиболее подходящее решение. Конечно, я обращусь снова.'
+            },
+            c4: {
+                name: 'Бекзод Исламов',
+                role: 'В тот момент меня не было в Узбекистане, но возникла важная юридическая проблема, касающаяся моей семьи. Не зная, как решить этот вопрос дистанционно, я обратился онлайн. Со мной связались очень быстро, и мою ситуацию подробно изучили. Юрист объяснил мне все процедуры простым и понятным языком, дал четкие инструкции по подготовке и подаче необходимых документов. Самое главное, несмотря на мое удаленное расположение, проблема моей семьи была решена под полным контролем. Именно благодаря этому сервису я убедился, что можно получить надежную юридическую помощь даже дистанционно. Хочу выразить особую благодарность за профессиональный подход и постоянную связь.'
             }
         },
         about: {
-            title: 'Об',
+            title: 'Моя обязанность – защищать ваши интересы в судебном порядке.',
             name: 'Хамидов Анваржон Мухаммаджонович',
             exp: 'Адвокат с опытом более 26 лет',
             text: `
@@ -184,7 +185,7 @@ const messages = {
 </span>
 `,
             location: '📍 Наш адрес',
-            address: 'Фергана, ул. П. Махмуд, 60'
+            address: ' Фаргона вилояти, Фаргона шахар, Ойбек МФЙ, П.Махмуд кучаси, 60-уй '
         },
         faq: {
             title1: 'Ответы на',
@@ -192,32 +193,34 @@ const messages = {
             title2: 'вопросы',
 
             f1: {
-                title: 'Я могу доверять онлайн-юристам?',
-                text: `Онлайн-формат дает больше возможностей: это агрегатор лучших профессионалов на рынке.
-Нанять такого юриста в частном порядке гораздо дороже, чем онлайн-консультация.
-Мы работаем с 2010 и собрали базу лучших специалистов.`
+                title: 'Безопасно ли связываться с юристом онлайн? Будут ли мои документы сохранены в тайне?',
+                text: `Да, это абсолютно безопасно. Все предоставленные вами документы и информация строго защищены юридической конфиденциальностью.
+Наш сайт использует современные технологии безопасности, и каждое обращение обрабатывается конфиденциально.
+Как юрист, я обязан по закону не разглашать информацию о клиентах третьим лицам. Поэтому вы можете свободно и уверенно изложить свою проблему.`
             },
 
             f2: {
-                title: 'У меня есть знакомый юрист. Я могу обратиться к нему?',
-                text: `Можете. Но юристы специализируются на одной области.
-Специалист по семейному праву мало знает про налоги.
-Наши юристы работают в своей сфере много лет.`
+                title: 'Насколько эффективны дистанционные онлайн-консультации?',
+                text: `Онлайн-консультации — это сегодня быстрое и удобное решение. Вы можете получить профессиональную юридическую помощь, не выходя из дома или с работы.
+
+Я подробно изучу ваш вопрос и дам конкретные рекомендации, основанные на действующем законодательстве. При необходимости я также проверю документы и помогу вам их исправить или подготовить.
+
+Этот метод особенно эффективен для экономии времени и быстрого принятия решений.`
             },
 
             f3: {
-                title: 'Какие гарантии?',
-                text: `Среди наших клиентов — Тинькофф, Яндекс и ВСК.
-Мы дорожим своей репутацией.
-Средняя оценка — 4.85.`
+                title: 'Как скоро я получу ответ на свой вопрос и как я могу с вами связаться?',
+                text: `На вопросы, отправленные через сайт, мы ответим в кратчайшие сроки. Как правило, заявки рассматриваются быстро, и вы получите четкий и понятный ответ.
+
+Вы можете написать через онлайн-чат или записаться на консультацию, используя специальную форму. Вы также можете воспользоваться полным консультационным сервисом, предварительно записавшись на прием для получения подробной консультации.
+
+Каждая заявка будет рассмотрена индивидуально, и вам будет предложено наиболее подходящее юридическое решение.`
             }
         },
         footer: {
             call: 'Единый колл-центр',
             socials: 'Khamidov в социальных сетях',
-            company: 'ООО “Национальная юридическая служба”',
-            rules: 'Правила использования информации',
-            more: 'Еще документы',
+            company: '"ООО "Национальная юридическая служба" L - 70666097 ИНН 311746759"',
 
             col1: {
                 title: 'Частным лицам',
@@ -234,9 +237,8 @@ const messages = {
                 l1: 'Шаблоны документов',
                 l2: 'Юрист для бизнеса',
                 l3: 'Корпоративное право',
-                l4: '44-ФЗ',
-                l5: 'Арбитраж',
-                l6: 'Работа с поставщиками'
+                l4: 'Арбитраж',
+                l5: 'Работа с поставщиками'
             },
 
             col3: {
@@ -308,16 +310,16 @@ const messages = {
         },
         stats: {
             n1: '1 000+',
-            s1: 'Mijozlar o‘z muammolarini bizga ishonib topshiradi',
+            s1: 'Mijozlar o‘z muammolarini menga ishonib topshiradi',
 
             n2: '> 350',
             s2: 'Mijozlar yuridik yordam oldi',
 
-            n3: '29 yil',
-            s3: 'Mijozlarimiz huquqlarini muvaffaqiyatli himoya qilamiz',
+            n3: '2 yil',
+            s3: 'Mijozlar huquqlarini muvaffaqiyatli himoya qilaman',
 
             n4: '26 yil',
-            s4: 'Mutaxassislarimizning o‘rtacha tajribasi'
+            s4: 'Yuridik tajribaga ega advokatman'
         },
         services: {
             title: 'Xizmatni',
@@ -436,28 +438,29 @@ const messages = {
             i3: 'Jarayonni olib boramiz'
         },
         team: {
-            title1: 'Qonunchilikdagi o‘zgarishlarni',
-            title2: 'biz',
-            highlight: 'ommaviy axborot vositalari uchun sharhlaymiz',
-            read: 'O‘qish',
+            title1: 'Mijozlarimiz biz haqimizda nima deydi?',
 
             c1: {
-                name: 'Ibragimova Nurida',
-                role: 'Sifat nazorati departamenti rahbari'
+                name: 'Akmal Karimov',
+                role: 'Onlayn tarzda advokatga murojaat qilish boshida biroz shubhali tuyulgandi. Lekin bu xizmat orqali ishlaganimdan so‘ng fikrim butunlay o‘zgardi. Savolimga juda tez javob oldim, barcha hujjatlarim sinchkovlik bilan ko‘rib chiqildi va aniq huquqiy tavsiyalar berildi. Eng muhimi, barcha ma’lumotlarim to‘liq maxfiy saqlanganini his qildim. Haqiqatan ham ishonchli va zamonaviy xizmat.'
             },
 
             c2: {
-                name: 'Proskurova Elena',
-                role: 'Xususiy huquq amaliyoti rahbari'
+                name: 'Dilnoza Rahimova',
+                role: 'Masofadan turib yuridik yordam olish men uchun juda qulay bo‘ldi. Ishim juda shoshilinch edi va advokat qisqa vaqt ichida muammoning yechimini tushuntirib berdi. Konsultatsiya davomida har bir savolimga batafsil va sodda tilda javob oldim. Hujjatlarni tekshirish va to‘g‘rilashda ham katta yordam berildi. Professional yondashuv va mijozga e’tibor yuqori darajada.'
             },
 
             c3: {
-                name: 'Titov Aleksandr',
-                role: 'Uy-joy huquqi va ijtimoiy munosabatlar bo‘yicha yetakchi yurist'
+                name: 'Jasur Tursunov',
+                role: 'Sayt orqali onlayn chatdan foydalandim va darhol aloqa o‘rnatildi. Menga kerakli yuridik maslahatlar aniq qonunchilik asosida tushuntirib berildi. Oldin boshqa joylarga ham murojaat qilgan edim, lekin bu darajadagi tezkorlik va aniqlikni uchratmagandim. Eng yoqqan jihati — har bir savolim jiddiy ko‘rib chiqildi va eng to‘g‘ri yechim taklif qilindi. Albatta yana murojaat qilaman.'
+            },
+            c4: {
+                name: 'Bekzod Islomov',
+                role: 'Men o‘sha paytda O‘zbekistonda emas edim, lekin oilam bilan bog‘liq muhim huquqiy masala yuzaga kelgandi. Masofadan turib bu muammoni qanday hal qilishni bilmay, onlayn tarzda murojaat qildim. Juda tez aloqaga chiqildi va vaziyatim batafsil o‘rganildi. Advokat barcha jarayonlarni menga oddiy va tushunarli qilib tushuntirib berdi, kerakli hujjatlarni qanday tayyorlash va topshirish bo‘yicha aniq yo‘riqnomalar berdi.Eng muhimi, men uzoqda bo‘lsam ham, oilamning masalasi to‘liq nazorat ostida olib borildi. Masofadan turib ham ishonchli yuridik yordam olish mumkinligiga aynan shu xizmat orqali amin bo‘ldim.Professional yondashuv va doimiy aloqada bo‘lib turilgani uchun alohida minnatdorchilik bildiraman.'
             }
         },
         about: {
-            title: 'HAQIDA',
+            title: 'Sizning huquqiy himoyangiz - mening vazifam',
             name: 'Xamidov Anvarjon Muhammadjonovich',
             exp: '26+ yillik tajribaga ega advokat',
             text: `
@@ -473,7 +476,7 @@ Shuningdek, “Madad Invest Bank”da yuriskonsult va departament direktori sifa
 Men uchun eng muhim qadriyatlar — ishonch, maxfiylik va natija.
 </span>`,
             location: '📍 Bizning manzil',
-            address: 'Farg‘ona, P. Mahmud ko‘chasi, 60-uy'
+            address: 'Фаргона вилояти, Фаргона шахар, Ойбек МФЙ, П.Махмуд кучаси, 60-уй'
         },
         faq: {
             title1: 'Ko‘p beriladigan',
@@ -481,32 +484,35 @@ Men uchun eng muhim qadriyatlar — ishonch, maxfiylik va natija.
             title2: 'javoblar',
 
             f1: {
-                title: 'Onlayn yuristlarga ishonish mumkinmi?',
-                text: `Onlayn format ko‘proq imkoniyat beradi.
-Bu — bozordagi eng yaxshi mutaxassislar yig‘ilgan platforma.
-Biz 2010-yildan beri ishlaymiz.`
+                title: 'Onlayn advokatga murojaat qilish xavfsizmi? Hujjatlarim sir saqlanadimi?',
+                text: `Ha, to‘liq xavfsiz. Siz taqdim etgan barcha hujjatlar va ma’lumotlar advokatlik siri asosida qat’iy himoya qilinadi.
+Saytimiz zamonaviy himoya texnologiyalari orqali ishlaydi va har bir murojaat maxfiy tarzda ko‘rib chiqiladi.
+
+Advokat sifatida men qonunchilikka muvofiq mijoz ma’lumotlarini uchinchi shaxslarga oshkor qilmaslik majburiyatini olaman. Shu sababli siz o‘z muammongizni bemalol va ishonch bilan bayon qilishingiz mumkin.`
             },
 
             f2: {
-                title: 'Tanish yuristim bor. Unga murojaat qilsam bo‘ladimi?',
-                text: `Albatta mumkin. Lekin yuristlar bir yo‘nalishda ishlaydi.
-Masalan, oilaviy yurist soliqlarni yaxshi bilmaydi.
-Bizda esa har biri o‘z sohasida mutaxassis.`
+                title: 'Masofadan turib onlayn konsultatsiya qanchalik samarali?',
+                text: `Onlayn konsultatsiya bugungi kunda tezkor va qulay yechim hisoblanadi. Siz uy yoki ish joyingizdan chiqmasdan turib professional yuridik yordam olishingiz mumkin.
+
+Men sizning savolingizni batafsil o‘rganib, amaldagi qonunchilik asosida aniq tavsiyalar beraman. Zarur bo‘lsa, hujjatlarni ko‘rib chiqib, ularni to‘g‘rilash yoki tayyorlashda ham yordam beraman.
+
+Bu usul ayniqsa vaqtni tejash va tezkor qaror qabul qilish uchun juda samarali.`
             },
 
             f3: {
-                title: 'Qanday kafolatlar bor?',
-                text: `Mijozlarimiz orasida yirik kompaniyalar bor.
-Biz obro‘mizni qadrlaymiz.
-O‘rtacha baho — 4.85.`
+                title: 'Savolimga qanchalik tez javob olaman va qanday murojaat qilish mumkin?',
+                text: `Sayt orqali yuborilgan savollarga imkon qadar qisqa vaqt ichida javob beriladi. Odatda murojaatlar tezkor ko‘rib chiqiladi va sizga aniq va tushunarli javob taqdim etiladi.
+
+Siz onlayn chat orqali yozishingiz yoki maxsus forma orqali qabulga yozilishingiz mumkin. Shuningdek, batafsil maslahat olish uchun oldindan vaqt belgilab, to‘liq konsultatsiya xizmatidan foydalanishingiz ham mumkin.
+
+Har bir murojaat individual tarzda ko‘rib chiqiladi va sizga eng to‘g‘ri yuridik yechim taklif qilinadi.`
             }
         },
         footer: {
             call: 'Yagona call-markaz',
             socials: 'Khamidov ijtimoiy tarmoqlarda',
-            company: 'Milliy yuridik xizmat',
-            rules: 'Sayt ma’lumotlaridan foydalanish qoidalari',
-            more: 'Yana hujjatlar',
+            company: 'ООО "Milliy yuridik xizmat" L - 70666097 ИНН 311746759',
 
             col1: {
                 title: 'Jismoniy shaxslar',
@@ -523,9 +529,8 @@ O‘rtacha baho — 4.85.`
                 l1: 'Hujjatlar',
                 l2: 'Biznes yuristi',
                 l3: 'Korporativ huquq',
-                l4: '44-FZ',
-                l5: 'Sud ishlari',
-                l6: 'Ta’minotchilar bilan ish'
+                l4: 'Sud ishlari',
+                l5: 'Ta’minotchilar bilan ish'
             },
 
             col3: {

@@ -1,7 +1,9 @@
 <script setup>
 import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
+const route = useRoute()
 const { t } = useI18n()
 
 const cards = computed(() => [
@@ -53,6 +55,17 @@ const cards = computed(() => [
 
 const cardBase =
     "rounded-3xl bg-white border border-slate-100 overflow-hidden flex flex-col shadow-[0_18px_40px_rgba(15,23,42,0.10)]"
+
+const searchQuery = computed(() => String(route.query.search || '').toLowerCase().trim())
+
+const filteredCards = computed(() => {
+    if (!searchQuery.value) return cards.value
+
+    return cards.value.filter((card) => {
+        const fullText = `${card.title} ${card.items.join(' ')}`.toLowerCase()
+        return fullText.includes(searchQuery.value)
+    })
+})
 </script>
 
 <template>
@@ -72,9 +85,13 @@ const cardBase =
                 </p>
             </div>
 
+            <div v-if="filteredCards.length === 0" class="mt-16 text-center text-slate-500 text-lg">
+                Ничего не найдено
+            </div>
+
             <!-- Карточки -->
             <div class="mt-16 grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-                <article v-for="(c, idx) in cards" :key="idx" :class="cardBase">
+                <article v-for="(c, idx) in filteredCards" :key="idx" :class="cardBase">
                     <div class="p-8 flex flex-col h-full">
 
                         <div class="mb-5 text-2xl">{{ c.icon }}</div>
@@ -90,7 +107,7 @@ const cardBase =
                             </div>
                         </div>
 
-                        <a href="#" class="mt-8 font-bold text-[#008d80] hover:opacity-80 transition">
+                        <a href="/order" class="mt-8 font-bold text-[#008d80] hover:opacity-80 transition">
                             {{ t('cases.more') }} →
                         </a>
 

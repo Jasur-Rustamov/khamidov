@@ -21,11 +21,11 @@ function companyReply(text) {
 
 app.post("/chat", async (req, res) => {
     try {
-        const { message } = req.body ?? {};
+        const { message, lang = "uz" } = req.body ?? {};
 
         if (!message) {
             return res.status(400).json(
-                companyReply("Напишите сообщение")
+                companyReply(lang === "uz" ? "Xabar yozing" : "Напишите сообщение")
             );
         }
 
@@ -36,14 +36,16 @@ app.post("/chat", async (req, res) => {
                 {
                     role: "system",
                     content: `
-Ты — живой человек и консультант.
+Ты — живой консультант.
+
+Отвечай строго на языке:
+${lang === "uz" ? "узбекском" : "русском"}
 
 Правила:
-- Отвечай на том же языке, что и пользователь
-- НЕ говори что ты ИИ, бот, ChatGPT или OpenAI
-- НЕ упоминай технологии
-- Отвечай естественно, как человек
-- Можно общаться свободно на любые темы
+- НЕ меняй язык
+- НЕ говори что ты ИИ
+- НЕ упоминай ChatGPT/OpenAI
+- Отвечай как человек
           `.trim(),
                 },
                 {
@@ -55,25 +57,27 @@ app.post("/chat", async (req, res) => {
 
         let reply =
             completion.choices?.[0]?.message?.content?.trim() ||
-            "Попробуйте еще раз";
+            (lang === "uz"
+                ? "Yana urinib ko‘ring"
+                : "Попробуйте еще раз");
 
-        // защита (если вдруг скажет что ИИ)
+        // защита
         if (
             reply.toLowerCase().includes("chatgpt") ||
-            reply.toLowerCase().includes("openai") ||
-            reply.toLowerCase().includes("искусственный интеллект") ||
-            reply.toLowerCase().includes("ai")
+            reply.toLowerCase().includes("openai")
         ) {
-            reply = "Давайте лучше перейдём к вашему вопросу 🙂";
+            reply =
+                lang === "uz"
+                    ? "Savolingizni davom ettiring 🙂"
+                    : "Продолжайте ваш вопрос 🙂";
         }
 
         return res.json(companyReply(reply));
-
     } catch (error) {
-        console.error("CHAT ERROR:", error);
+        console.error(error);
 
         return res.status(500).json(
-            companyReply("Ошибка сервера")
+            companyReply("Server error")
         );
     }
 });
@@ -81,5 +85,5 @@ app.post("/chat", async (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+    console.log("🚀 Server running on port " + PORT);
 });
